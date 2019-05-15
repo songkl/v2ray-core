@@ -1,4 +1,4 @@
-package platform
+package platform // import "v2ray.com/core/common/platform"
 
 import (
 	"os"
@@ -10,6 +10,13 @@ import (
 type EnvFlag struct {
 	Name    string
 	AltName string
+}
+
+func NewEnvFlag(name string) EnvFlag {
+	return EnvFlag{
+		Name:    name,
+		AltName: NormalizeEnvName(name),
+	}
 }
 
 func (f EnvFlag) GetValue(defaultValue func() string) string {
@@ -61,18 +68,18 @@ func getExecutableSubDir(dir string) func() string {
 
 func GetAssetLocation(file string) string {
 	const name = "v2ray.location.asset"
-	assetPath := EnvFlag{Name: name, AltName: NormalizeEnvName(name)}.GetValue(getExecutableDir)
+	assetPath := NewEnvFlag(name).GetValue(getExecutableDir)
 	return filepath.Join(assetPath, file)
 }
 
 func GetPluginDirectory() string {
 	const name = "v2ray.location.plugin"
-	pluginDir := EnvFlag{Name: name, AltName: NormalizeEnvName(name)}.GetValue(getExecutableSubDir("plugins"))
+	pluginDir := NewEnvFlag(name).GetValue(getExecutableSubDir("plugins"))
 	return pluginDir
 }
 
 func GetConfigurationPath() string {
 	const name = "v2ray.location.config"
-	configPath := EnvFlag{Name: name, AltName: NormalizeEnvName(name)}.GetValue(getExecutableDir)
+	configPath := NewEnvFlag(name).GetValue(getExecutableDir)
 	return filepath.Join(configPath, "config.json")
 }
